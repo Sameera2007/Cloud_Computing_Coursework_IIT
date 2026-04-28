@@ -1,0 +1,118 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: techsalary
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: localpassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  identity:
+    build: ./services/identity
+    ports: ["4002:4002"]
+    environment:
+      PORT: 4002
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: techsalary
+      DB_USER: postgres
+      DB_PASSWORD: localpassword
+      JWT_SECRET: local_dev_jwt_secret_change_in_production
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  salary-submission:
+    build: ./services/salary-submission
+    ports: ["4001:4001"]
+    environment:
+      PORT: 4001
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: techsalary
+      DB_USER: postgres
+      DB_PASSWORD: localpassword
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  vote:
+    build: ./services/vote
+    ports: ["4003:4003"]
+    environment:
+      PORT: 4003
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: techsalary
+      DB_USER: postgres
+      DB_PASSWORD: localpassword
+      SALARY_SERVICE_URL: http://salary-submission:4001
+      APPROVAL_THRESHOLD: 3
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  search:
+    build: ./services/search
+    ports: ["4004:4004"]
+    environment:
+      PORT: 4004
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: techsalary
+      DB_USER: postgres
+      DB_PASSWORD: localpassword
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  stats:
+    build: ./services/stats
+    ports: ["4005:4005"]
+    environment:
+      PORT: 4005
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: techsalary
+      DB_USER: postgres
+      DB_PASSWORD: localpassword
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  bff:
+    build: ./services/bff
+    ports: ["4000:4000"]
+    environment:
+      PORT: 4000
+      SALARY_SERVICE_URL: http://salary-submission:4001
+      IDENTITY_SERVICE_URL: http://identity:4002
+      VOTE_SERVICE_URL: http://vote:4003
+      SEARCH_SERVICE_URL: http://search:4004
+      STATS_SERVICE_URL: http://stats:4005
+    depends_on:
+      - identity
+      - salary-submission
+      - vote
+      - search
+      - stats
+
+  frontend:
+    build: ./services/frontend
+    ports: ["3000:3000"]
+    depends_on:
+      - bff
+
+volumes:
+  postgres_data:

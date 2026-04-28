@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: app
+data:
+  DB_HOST: "postgres-service.data.svc.cluster.local"
+  DB_PORT: "5432"
+  DB_NAME: "techsalary"
+  DB_USER: "postgres"
+  APPROVAL_THRESHOLD: "3"
+  SALARY_SERVICE_URL:   "http://salary-submission-service:4001"
+  IDENTITY_SERVICE_URL: "http://identity-service:4002"
+  VOTE_SERVICE_URL:     "http://vote-service:4003"
+  SEARCH_SERVICE_URL:   "http://search-service:4004"
+  STATS_SERVICE_URL:    "http://stats-service:4005"

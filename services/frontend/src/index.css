@@ -1,0 +1,175 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg:          #F8F9FC;
+  --surface:     #FFFFFF;
+  --surface-2:   #F1F5F9;
+  --surface-3:   #E8EDF5;
+  --border:      #E2E8F0;
+  --border-2:    #CBD5E1;
+
+  --text-1:  #0F172A;
+  --text-2:  #475569;
+  --text-3:  #94A3B8;
+
+  --primary:        #6366F1;
+  --primary-dark:   #4F46E5;
+  --primary-hover:  #4338CA;
+  --primary-light:  #EEF2FF;
+  --primary-subtle: #F5F3FF;
+
+  --emerald:       #059669;
+  --emerald-light: #ECFDF5;
+  --emerald-border:#A7F3D0;
+
+  --amber:       #D97706;
+  --amber-light: #FFFBEB;
+  --amber-border:#FDE68A;
+
+  --red:       #DC2626;
+  --red-light: #FEF2F2;
+  --red-border:#FECACA;
+
+  --font: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --r-xs: 4px;
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 20px;
+  --r-2xl: 28px;
+
+  --sh-xs:  0 1px 2px rgba(0,0,0,0.05);
+  --sh-sm:  0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+  --sh-md:  0 4px 6px -1px rgba(0,0,0,0.06), 0 2px 4px -1px rgba(0,0,0,0.04);
+  --sh-lg:  0 10px 15px -3px rgba(0,0,0,0.07), 0 4px 6px -2px rgba(0,0,0,0.03);
+  --sh-xl:  0 20px 25px -5px rgba(0,0,0,0.07), 0 10px 10px -5px rgba(0,0,0,0.02);
+
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur:  180ms;
+}
+
+html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text-1);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; }
+input, select, textarea { font-family: inherit; }
+img { max-width: 100%; display: block; }
+
+/* ── Layout ─────────────────────────────────────── */
+.container    { width: 100%; max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+.container-sm { width: 100%; max-width: 520px;  margin: 0 auto; padding: 0 24px; }
+
+/* ── Typography ──────────────────────────────────── */
+.label-tag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+/* ── Form fields ─────────────────────────────────── */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-1);
+  letter-spacing: -0.01em;
+}
+
+.field-input,
+.field-select {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: 14px;
+  font-family: var(--font);
+  color: var(--text-1);
+  background: var(--surface);
+  outline: none;
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+.field-input:focus,
+.field-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+}
+
+.field-input::placeholder { color: var(--text-3); }
+
+.field-select {
+  padding-right: 36px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+/* ── Alert ───────────────────────────────────────── */
+.alert {
+  padding: 12px 16px;
+  border-radius: var(--r-md);
+  font-size: 14px;
+  line-height: 1.5;
+  border: 1px solid;
+}
+.alert-success { background: var(--emerald-light); border-color: var(--emerald-border); color: var(--emerald); }
+.alert-error   { background: var(--red-light);     border-color: var(--red-border);     color: var(--red); }
+.alert-info    { background: var(--primary-light);  border-color: #C7D2FE;               color: var(--primary-dark); }
+
+/* ── Responsive helpers ──────────────────────────── */
+.desktop-only { display: flex; }
+.mobile-only  { display: none; }
+
+@media (max-width: 768px) {
+  .desktop-only { display: none !important; }
+  .mobile-only  { display: flex !important; }
+  .container    { padding: 0 16px; }
+  .container-sm { padding: 0 16px; }
+}
+
+/* ── Progress bar ────────────────────────────────── */
+.progress-track {
+  width: 100%;
+  height: 5px;
+  background: var(--surface-3);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--primary);
+  transition: width 600ms var(--ease);
+}
+
+/* ── Divider ─────────────────────────────────────── */
+.divider { height: 1px; background: var(--border); border: none; width: 100%; }
+
+/* ── Section spacing ─────────────────────────────── */
+.page-section { padding: 64px 0; }
+.page-section-sm { padding: 40px 0; }
