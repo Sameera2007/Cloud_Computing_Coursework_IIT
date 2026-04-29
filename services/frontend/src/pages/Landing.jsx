@@ -94,7 +94,7 @@ export default function Landing() {
             <motion.p {...fadeUp(0.1)} style={{
               fontSize: 17, lineHeight: 1.7, color: 'var(--text-2)', marginBottom: 32, maxWidth: 440,
             }}>
-              Community-driven salary database for Sri Lanka's tech industry.
+              Community-driven salary database for Sri Lanka's Tech Industry.
               Anonymous submissions, peer-verified, openly browseable.
             </motion.p>
 

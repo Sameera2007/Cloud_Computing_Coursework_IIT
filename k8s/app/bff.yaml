@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: bff
-          image: YOUR_REGISTRY/techsalary/bff:v1
+          image: techsalaryacrsk.azurecr.io/techsalary/bff:v1
           ports:
             - containerPort: 4000
           env:

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: YOUR_REGISTRY/techsalary/frontend:v1
+          image: techsalaryacrsk.azurecr.io/techsalary/frontend:v1
           ports:
             - containerPort: 3000
           livenessProbe:

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: search
-          image: YOUR_REGISTRY/techsalary/search:v1
+          image: techsalaryacrsk.azurecr.io/techsalary/search:v1
           ports:
             - containerPort: 4004
           env:
