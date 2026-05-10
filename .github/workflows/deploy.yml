@@ -1,0 +1,259 @@
+name: CI/CD — Test, Build and Deploy to AKS
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  # ── STAGE 1: Tests (all run in parallel) ──────────────────────────────────
+  test-bff:
+    name: Test BFF
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+        working-directory: services/bff
+      - run: npm test
+        working-directory: services/bff
+
+  test-identity:
+    name: Test Identity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+        working-directory: services/identity
+      - run: npm test
+        working-directory: services/identity
+
+  test-salary-submission:
+    name: Test Salary Submission
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+        working-directory: services/salary-submission
+      - run: npm test
+        working-directory: services/salary-submission
+
+  test-vote:
+    name: Test Vote
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+        working-directory: services/vote
+      - run: npm test
+        working-directory: services/vote
+
+  test-search:
+    name: Test Search
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+        working-directory: services/search
+      - run: npm test
+        working-directory: services/search
+
+  test-stats:
+    name: Test Stats
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+        working-directory: services/stats
+      - run: npm test
+        working-directory: services/stats
+
+  test-frontend:
+    name: Build Check Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+        working-directory: services/frontend
+      - run: npm run build
+        working-directory: services/frontend
+
+  # ── STAGE 2: Build & Push (all parallel, only if tests pass) ──────────────
+  build-and-push-frontend:
+    name: Build Frontend
+    runs-on: ubuntu-latest
+    needs: [test-frontend]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      - uses: docker/build-push-action@v5
+        with:
+          context: ./services/frontend
+          push: true
+          tags: ${{ secrets.ACR_LOGIN_SERVER }}/techsalary/frontend:${{ github.sha }}
+
+  build-and-push-bff:
+    name: Build BFF
+    runs-on: ubuntu-latest
+    needs: [test-bff]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      - uses: docker/build-push-action@v5
+        with:
+          context: ./services/bff
+          push: true
+          tags: ${{ secrets.ACR_LOGIN_SERVER }}/techsalary/bff:${{ github.sha }}
+
+  build-and-push-identity:
+    name: Build Identity
+    runs-on: ubuntu-latest
+    needs: [test-identity]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      - uses: docker/build-push-action@v5
+        with:
+          context: ./services/identity
+          push: true
+          tags: ${{ secrets.ACR_LOGIN_SERVER }}/techsalary/identity:${{ github.sha }}
+
+  build-and-push-salary-submission:
+    name: Build Salary Submission
+    runs-on: ubuntu-latest
+    needs: [test-salary-submission]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      - uses: docker/build-push-action@v5
+        with:
+          context: ./services/salary-submission
+          push: true
+          tags: ${{ secrets.ACR_LOGIN_SERVER }}/techsalary/salary-submission:${{ github.sha }}
+
+  build-and-push-vote:
+    name: Build Vote
+    runs-on: ubuntu-latest
+    needs: [test-vote]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      - uses: docker/build-push-action@v5
+        with:
+          context: ./services/vote
+          push: true
+          tags: ${{ secrets.ACR_LOGIN_SERVER }}/techsalary/vote:${{ github.sha }}
+
+  build-and-push-search:
+    name: Build Search
+    runs-on: ubuntu-latest
+    needs: [test-search]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      - uses: docker/build-push-action@v5
+        with:
+          context: ./services/search
+          push: true
+          tags: ${{ secrets.ACR_LOGIN_SERVER }}/techsalary/search:${{ github.sha }}
+
+  build-and-push-stats:
+    name: Build Stats
+    runs-on: ubuntu-latest
+    needs: [test-stats]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      - uses: docker/build-push-action@v5
+        with:
+          context: ./services/stats
+          push: true
+          tags: ${{ secrets.ACR_LOGIN_SERVER }}/techsalary/stats:${{ github.sha }}
+
+  # ── STAGE 3: Deploy to AKS (only if ALL builds pass) ──────────────────────
+  deploy:
+    name: Deploy to AKS
+    runs-on: ubuntu-latest
+    needs:
+      - build-and-push-frontend
+      - build-and-push-bff
+      - build-and-push-identity
+      - build-and-push-salary-submission
+      - build-and-push-vote
+      - build-and-push-search
+      - build-and-push-stats
+    steps:
+      - uses: azure/setup-kubectl@v3
+
+      - name: Configure kubectl
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+
+      - name: Rolling update all deployments
+        run: |
+          kubectl set image deployment/frontend          frontend=${{ secrets.ACR_LOGIN_SERVER }}/techsalary/frontend:${{ github.sha }}                   -n app
+          kubectl set image deployment/bff               bff=${{ secrets.ACR_LOGIN_SERVER }}/techsalary/bff:${{ github.sha }}                             -n app
+          kubectl set image deployment/identity          identity=${{ secrets.ACR_LOGIN_SERVER }}/techsalary/identity:${{ github.sha }}                   -n app
+          kubectl set image deployment/salary-submission salary-submission=${{ secrets.ACR_LOGIN_SERVER }}/techsalary/salary-submission:${{ github.sha }} -n app
+          kubectl set image deployment/vote              vote=${{ secrets.ACR_LOGIN_SERVER }}/techsalary/vote:${{ github.sha }}                           -n app
+          kubectl set image deployment/search            search=${{ secrets.ACR_LOGIN_SERVER }}/techsalary/search:${{ github.sha }}                       -n app
+          kubectl set image deployment/stats             stats=${{ secrets.ACR_LOGIN_SERVER }}/techsalary/stats:${{ github.sha }}                         -n app
+
+      - name: Wait for all rollouts to complete
+        run: |
+          kubectl rollout status deployment/frontend          -n app --timeout=120s
+          kubectl rollout status deployment/bff               -n app --timeout=120s
+          kubectl rollout status deployment/identity          -n app --timeout=120s
+          kubectl rollout status deployment/salary-submission -n app --timeout=120s
+          kubectl rollout status deployment/vote              -n app --timeout=120s
+          kubectl rollout status deployment/search            -n app --timeout=120s
+          kubectl rollout status deployment/stats             -n app --timeout=120s
