@@ -35,7 +35,7 @@ const STEPS = [
 ];
 
 const SAMPLE_CARDS = [
-  { company: 'WSO2', role: 'Senior Software Engineer', level: 'Senior', salary: 280000, currency: 'LKR', city: 'Colombo', votes: 7 },
+  { company: 'MIT', role: 'Senior Software Engineer', level: 'Senior', salary: 280000, currency: 'LKR', city: 'Colombo', votes: 7 },
   { company: 'LSEG', role: 'Lead DevOps Engineer', level: 'Lead', salary: 340000, currency: 'LKR', city: 'Colombo', votes: 4 },
   { company: 'IFS', role: 'Mid-level Data Engineer', level: 'Mid', salary: 185000, currency: 'LKR', city: 'Colombo', votes: 5 },
 ];
